@@ -10,6 +10,7 @@ import {
     StyleSheet,
     Text,
     View,
+    // $FlowFixMe
 } from 'react-native';
 
 const styles = StyleSheet.create({
