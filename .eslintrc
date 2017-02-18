@@ -1,0 +1,35 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": "eslint-config-airbnb",
+  "globals": {
+    "__DEV__": true
+  },
+  "plugins": [
+    "react",
+    "react-native"
+  ],
+  "rules": { // possible "off", "warn", "error"
+    "indent": ["error", 4, { "SwitchCase": 1 }],
+    "no-console" : "off",
+    "no-underscore-dangle": "off",
+
+    // Disable this to allow Flow & JS imports from same file.
+    // import/no-duplicates takes care of other import duplication.
+    // See: https://github.com/airbnb/javascript/issues/1054
+    // TODO: Revisit separate files for Flow types
+    "no-duplicate-imports": "off",
+
+    "react-native/no-unused-styles": "error",
+    "react-native/split-platform-components": "error",
+    "react-native/no-inline-styles": "error",
+    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-indent": ["error", 4],
+    "react/jsx-indent-props": ["error", 4]
+  }
+}

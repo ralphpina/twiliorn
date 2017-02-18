@@ -1,22 +1,41 @@
 {
-	"name": "twiliorn",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
-	},
-	"dependencies": {
-		"react": "~15.4.0",
-		"react-native": "0.41.2"
-	},
-	"devDependencies": {
-		"babel-jest": "18.0.0",
-		"babel-preset-react-native": "1.9.1",
-		"jest": "18.1.0",
-		"react-test-renderer": "~15.4.0"
-	},
-	"jest": {
-		"preset": "react-native"
-	}
+  "name": "twiliorn",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "flow": "flow",
+    "lint": "eslint ./",
+    "fixes": "./fixes.sh",
+    "androidDeviceDebug": "adb reverse tcp:8081 tcp:8081",
+    "androidLog": "react-native log-android",
+    "lint-list": "eslint ./ -f unix | grep \"^${pwd}\" | awk '{ print $NF }' | sort | uniq -c | sort -nr"
+  },
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "react": "~15.4.0",
+    "react-native": "0.41.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.0",
+    "babel-jest": "18.0.0",
+    "babel-plugin-transform-strict-mode": "6.18.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "eslint-plugin-react-native": "^2.0.0",
+    "flow-bin": "^0.36.0",
+    "immutable-devtools": "0.0.7",
+    "jest": "18.1.0",
+    "pretty-immutable": "1.0.1",
+    "react-test-renderer": "~15.4.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
 }
