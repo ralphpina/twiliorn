@@ -10,21 +10,19 @@
     tools:showIn="@layout/layout_video_view">
 
     <com.twilio.video.RNVideoView
+        android:id="@+id/primary_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.twilio.video.RNVideoView
         android:id="@+id/thumbnail_video_view"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
-        android:visibility="gone"
         app:mirror="true"
         app:overlaySurface="true"
-        tools:background="@android:color/holo_red_light"
-        tools:visibility="visible" />
-
-    <com.twilio.video.RNVideoView
-        android:id="@+id/primary_video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        tools:background="@android:color/holo_red_light"/>
 
     <LinearLayout
         android:id="@+id/status"

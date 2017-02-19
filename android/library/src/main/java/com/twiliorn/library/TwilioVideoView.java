@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -41,8 +40,10 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     private final ThemedReactContext themedReactContext;
     private final RCTEventEmitter    eventEmitter;
 
-    private static final String ACCESS_ONE = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc0ODI3ODQiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzQ4NjM4NCwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSsyQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.mGCGKYJEo54XlT3Fc5nRTM-zTDbb-vnSyaJE1dE5bg8";
-    private static final String ACCESS_TWO = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc0ODI4MjIiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzQ4NjQyMiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSszQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.Kh8d-TbwiDZlvlRbfwN-9bo7gkz9hl6Fa3_DwcmXUPg";
+    // ralph.pina+2@gmail.com
+    private static final String ACCESS_ONE = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc1MjMzMzEiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzUyNjkzMSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSsyQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.twyOsoRJr9pl-87BzcvmdWPJS9ly4aG3kzD7DjeYuqk";
+    // ralph.pina+3@gmail.com
+    private static final String ACCESS_TWO = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc1MjMyNzYiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzUyNjg3NiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSszQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.HH0RedqsN-eQdgEEWMWQXtsQDh9hHiIL11XnIDwiZWs";
 
     /*
      * You must provide a Twilio Access Token to connect to the Video service
@@ -184,7 +185,6 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         primaryVideoView.updateLayout(left, top, right, bottom);
-        thumbnailVideoView.updateLayout(left, top, right, bottom);
     }
 
     @Override
@@ -482,17 +482,6 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
      * Called when participant joins the room
      */
     private void addParticipant(Participant participant) {
-        /*
-         * This app only displays video for one additional participant per Room
-         */
-        if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
-            Snackbar.make(connectActionFab,
-                          "Multiple participants are not currently support in this UI",
-                          Snackbar.LENGTH_LONG)
-                    .setAction("Action", null)
-                    .show();
-            return;
-        }
         participantIdentity = participant.getIdentity();
         videoStatusTextView.setText("Participant " + participantIdentity + " joined");
 
@@ -540,14 +529,13 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     }
 
     private void moveLocalVideoToPrimaryView() {
-        if (thumbnailVideoView.getVisibility() == View.VISIBLE) {
-            localVideoTrack.removeRenderer(thumbnailVideoView);
-            thumbnailVideoView.setVisibility(View.GONE);
-            localVideoTrack.addRenderer(primaryVideoView);
-            localVideoView = primaryVideoView;
-            primaryVideoView.setMirror(cameraCapturer.getCameraSource() ==
-                                               CameraCapturer.CameraSource.FRONT_CAMERA);
-        }
+        Log.e(TAG, "=== moveLocalVideoToPrimaryView ===");
+        localVideoTrack.removeRenderer(thumbnailVideoView);
+        thumbnailVideoView.setVisibility(View.GONE);
+        localVideoTrack.addRenderer(primaryVideoView);
+        localVideoView = primaryVideoView;
+        primaryVideoView.setMirror(cameraCapturer.getCameraSource() ==
+                                           CameraCapturer.CameraSource.FRONT_CAMERA);
     }
 
     // ====== MEDIA LISTENER =======================================================================
@@ -609,14 +597,14 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     }
 
     private void moveLocalVideoToThumbnailView() {
-        if (thumbnailVideoView.getVisibility() == View.GONE) {
-            thumbnailVideoView.setVisibility(View.VISIBLE);
-            localVideoTrack.removeRenderer(primaryVideoView);
-            localVideoTrack.addRenderer(thumbnailVideoView);
-            localVideoView = thumbnailVideoView;
-            thumbnailVideoView.setMirror(cameraCapturer.getCameraSource() ==
-                                                 CameraCapturer.CameraSource.FRONT_CAMERA);
-        }
+        Log.e(TAG, "=== moveLocalVideoToThumbnailView === thumbnailVideoView.getVisibility() = " + thumbnailVideoView.getVisibility());
+        Log.e(TAG, "=== moveLocalVideoToThumbnailView === setting up thunbnail");
+        thumbnailVideoView.setVisibility(View.VISIBLE);
+        localVideoTrack.removeRenderer(primaryVideoView);
+        localVideoTrack.addRenderer(thumbnailVideoView);
+        localVideoView = thumbnailVideoView;
+        thumbnailVideoView.setMirror(cameraCapturer.getCameraSource() ==
+                                             CameraCapturer.CameraSource.FRONT_CAMERA);
     }
 
     private void removeParticipantVideo(VideoTrack videoTrack) {
