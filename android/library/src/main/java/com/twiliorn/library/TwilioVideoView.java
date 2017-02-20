@@ -1,9 +1,12 @@
 package com.twiliorn.library;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -30,8 +33,12 @@ import com.twilio.video.TwilioException;
 import com.twilio.video.VideoClient;
 import com.twilio.video.VideoRenderer;
 import com.twilio.video.VideoTrack;
+import com.twiliorn.library.permissions.PermissionsManager;
+import com.twiliorn.library.permissions.PermissionsResult;
 
 import java.util.Map;
+
+import rx.functions.Action1;
 
 public class TwilioVideoView extends FrameLayout implements LifecycleEventListener {
 
@@ -39,6 +46,7 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
 
     private final ThemedReactContext themedReactContext;
     private final RCTEventEmitter    eventEmitter;
+    private final PermissionsManager permissionsManager;
 
     // ralph.pina+2@gmail.com
     private static final String ACCESS_ONE = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc1MjMzMzEiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzUyNjkzMSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSsyQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.twyOsoRJr9pl-87BzcvmdWPJS9ly4aG3kzD7DjeYuqk";
@@ -91,6 +99,7 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
         super(themedReactContext);
         this.themedReactContext = themedReactContext;
         this.eventEmitter = themedReactContext.getJSModule(RCTEventEmitter.class);
+        this.permissionsManager = PermissionsManager.get(themedReactContext);
 
         // add lifecycle for onResume and on onPause
         themedReactContext.addLifecycleEventListener(this);
@@ -120,17 +129,13 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
         /*
          * Check camera and microphone permissions. Needed in Android M.
          */
-        // TODO deal with permissions
-//        if (!checkPermissionForCameraAndMicrophone()) {
-//            requestPermissionForCameraAndMicrophone();
-//        } else {
-        createLocalMedia();
-        createVideoClient();
-//        }
+        if (!permissionsManager.isCameraGranted() || !permissionsManager.isMicrophoneGranted()) {
+            requestPermissionForCameraAndMicrophone();
+        } else {
+            createLocalMedia();
+            createVideoClient();
+        }
 
-        /*
-         * Set the initial state of the UI
-         */
         intializeUI();
     }
 
@@ -177,6 +182,49 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
         localVideoActionFab.setOnClickListener(localVideoClickListener());
         muteActionFab.show();
         muteActionFab.setOnClickListener(muteClickListener());
+    }
+
+    // ===== PERMISSIONS ===========================================================================
+
+    private void requestPermissionForCameraAndMicrophone() {
+        final Activity activity = themedReactContext.getCurrentActivity();
+        if (activity != null) {
+            if (permissionsManager.neverAskForCamera(activity) || permissionsManager.neverAskForMicrophone(activity)) {
+                showPermissionsNeededSnackbar(activity);
+            } else {
+                permissionsManager.requestCameraAndMicrophonePermissions()
+                                  .subscribe(new Action1<PermissionsResult>() {
+                                      @Override
+                                      public void call(PermissionsResult permissionsResult) {
+                                          if (permissionsResult.isGranted()) {
+                                              createLocalMedia();
+                                              createVideoClient();
+                                          } else {
+                                              showPermissionsNeededSnackbar(activity);
+                                          }
+                                      }
+                                  }, new Action1<Throwable>() {
+                                      @Override
+                                      public void call(Throwable throwable) {
+                                          Log.e(TAG, "Requesting permissions threw. Something's wrong.... message: " + throwable.getMessage());
+                                      }
+                                  });
+            }
+        }
+    }
+
+    private void showPermissionsNeededSnackbar(@NonNull final Activity activity) {
+        final Snackbar snackbar = Snackbar.make(activity.getWindow().getDecorView(),
+                                                R.string.permissions_needed,
+                                                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(R.string.action_settings, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+                permissionsManager.intentToAppSettings(activity);
+            }
+        });
+        snackbar.show();
     }
 
     // ===== LIFECYCLE EVENTS ======================================================================
