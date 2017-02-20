@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -48,16 +49,6 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     private final RCTEventEmitter    eventEmitter;
     private final PermissionsManager permissionsManager;
 
-    // ralph.pina+2@gmail.com
-    private static final String ACCESS_ONE = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc1MjMzMzEiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzUyNjkzMSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSsyQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.twyOsoRJr9pl-87BzcvmdWPJS9ly4aG3kzD7DjeYuqk";
-    // ralph.pina+3@gmail.com
-    private static final String ACCESS_TWO = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxLTE0ODc1MjMyNzYiLCJpc3MiOiJTS2E1MWFjMmZlNWQ0NTJmYTc1M2IzNWU3Njk1NzhkMjQxIiwic3ViIjoiQUM1NzRmM2YxNDNjOWU2ZjQ3ZDNkMzliZWZkZWQ0MjQzZiIsImV4cCI6MTQ4NzUyNjg3NiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoicmFscGgucGluYSszQGdtYWlsLmNvbSIsInJ0YyI6eyJjb25maWd1cmF0aW9uX3Byb2ZpbGVfc2lkIjoiVlNkMTVkMTI4MGQwZGI1MTQ1YzQ1MzIzMDc3N2M1ZWJmOCJ9fX0.HH0RedqsN-eQdgEEWMWQXtsQDh9hHiIL11XnIDwiZWs";
-
-    /*
-     * You must provide a Twilio Access Token to connect to the Video service
-     */
-    private String TWILIO_ACCESS_TOKEN = ACCESS_ONE;
-
     /*
      * The Video Client allows a client to connect to a room
      */
@@ -75,9 +66,6 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     private RNVideoView primaryVideoView;
     private RNVideoView thumbnailVideoView;
 
-    /*
-     * Android application UI elements
-     */
     private TextView             videoStatusTextView;
     private CameraCapturer       cameraCapturer;
     private LocalMedia           localMedia;
@@ -90,10 +78,10 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     private AlertDialog          alertDialog;
     private AudioManager         audioManager;
     private String               participantIdentity;
-
-    private int           previousAudioMode;
-    private VideoRenderer localVideoView;
-    private boolean       disconnectedFromOnDestroy;
+    private int                  previousAudioMode;
+    private VideoRenderer        localVideoView;
+    private boolean              disconnectedFromOnDestroy;
+    private String               accessToken;
 
     public TwilioVideoView(ThemedReactContext themedReactContext) {
         super(themedReactContext);
@@ -162,7 +150,9 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
 
         // OPTION 1- Generate an access token from the getting started portal
         // https://www.twilio.com/console/video/dev-tools/testing-tools
-        videoClient = new VideoClient(getContext(), TWILIO_ACCESS_TOKEN);
+        if (accessToken != null) {
+            videoClient = new VideoClient(getContext(), accessToken);
+        }
 
         // OPTION 2- Retrieve an access token from your own web app
         // retrieveAccessTokenfromServer();
@@ -214,7 +204,8 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
     }
 
     private void showPermissionsNeededSnackbar(@NonNull final Activity activity) {
-        final Snackbar snackbar = Snackbar.make(activity.getWindow().getDecorView(),
+        final Snackbar snackbar = Snackbar.make(activity.getWindow()
+                                                        .getDecorView(),
                                                 R.string.permissions_needed,
                                                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(R.string.action_settings, new View.OnClickListener() {
@@ -657,5 +648,10 @@ public class TwilioVideoView extends FrameLayout implements LifecycleEventListen
 
     private void removeParticipantVideo(VideoTrack videoTrack) {
         videoTrack.removeRenderer(primaryVideoView);
+    }
+
+    public void setAccessToken(@Nullable String accessToken) {
+        this.accessToken = accessToken;
+        createVideoClient();
     }
 }

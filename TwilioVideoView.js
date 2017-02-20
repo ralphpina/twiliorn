@@ -4,17 +4,11 @@ import {
     View,
     // $FlowFixMe
 } from 'react-native';
-import React from 'react';
+import { PropTypes } from 'react';
 
-const TwilioVideoView = props => (
-    <NativeView {...props} />
-);
-
-const NativeView = requireNativeComponent('RNTwilioVideoView', {
+module.exports = requireNativeComponent('RNTwilioVideoView', {
     propTypes: {
+        twilioAccessToken: PropTypes.string,
         ...View.propTypes,
     },
 });
-
-TwilioVideoView.displayName = 'TwilioVideoView';
-export default TwilioVideoView;
