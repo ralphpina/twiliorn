@@ -53,7 +53,7 @@ const SimpleTwilioVideo = () => ({
                 />
                 <Text
                     style={styles.buttonText}
-                    onPress={this.props.navigator.pop()}
+                    onPress={() => this.props.navigator.pop()}
                 >
                     Back
                 </Text>

@@ -63,13 +63,13 @@ const Home = props => ({
                 </Text>
                 <TouchableHighlight
                     style={styles.button}
-                    onPress={this.navigate('SimpleTwilioVideo')}
+                    onPress={() => this.navigate('SimpleTwilioVideo')}
                 >
                     <Text style={styles.buttonText}>Simple View</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     style={styles.button}
-                    onPress={this.navigate('CustomTwilioVideo')}
+                    onPress={() => this.navigate('CustomTwilioVideo')}
                 >
                     <Text style={styles.buttonText}>Custom View</Text>
                 </TouchableHighlight>
