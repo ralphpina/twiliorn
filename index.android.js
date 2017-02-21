@@ -13,7 +13,13 @@ import {
 
 import Home from './example/Home';
 import SimpleTwilioVideo from './example/SimpleTwilioVideo';
-import CustomTwilioVideo from './example/CustomTwilioVideo';
+import CustomizedTwilioVideo from './example/CustomizedTwilioVideo';
+
+/**
+ * You must provide a Twilio Access Token to connect to the Video service
+ * @type {string}
+ */
+export const TWILIO_ACCESS_TOKEN = '';
 
 function renderScene(route, navigator) {
     if (route.name === 'Main') {
@@ -23,7 +29,7 @@ function renderScene(route, navigator) {
         return <SimpleTwilioVideo navigator={navigator} {...route.passProps} />;
     }
     if (route.name === 'CustomTwilioVideo') {
-        return <CustomTwilioVideo navigator={navigator} {...route.passProps} />;
+        return <CustomizedTwilioVideo navigator={navigator} {...route.passProps} />;
     }
     return null;
 }
