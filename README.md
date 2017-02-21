@@ -39,7 +39,100 @@ The library project declares the following permissions, which **will be merged**
 ```
 ##Usage
 
+There are two classes that can be used: 
+`TwilioVideoView` - this is a basic setup that does not allow customization. All the UI, buttons, behavior, etc. are implemented natively.
 
+```javascript
+<TwilioVideoView
+    style={styles.twilioView}
+    twilioAccessToken={TWILIO_ACCESS_TOKEN}/>
+```
+`CustomTwilioVideoView` - this provides you you a way to customize and listen to events. You will need to create your own UI components such as buttons. You'll still get a main window for the call, as well as a thumbnail for the participant.
+
+```javascript
+export default class CustomizedTwilioVideo extends Component {
+
+    twilioView: CustomizedTwilioVideo;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            statusText: '',
+            isConnected: false,
+        };
+    }
+
+    connectButtonPress() {
+        this.state.isConnected ? this.twilioView.disconnect() : this.twilioView.connect(ROOM_NAME);
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <CustomTwilioVideoView
+                    ref={(twilioView) => { this.twilioView = twilioView; }}
+                    style={styles.twilioView}
+                    twilioAccessToken={TWILIO_ACCESS_TOKEN}
+                    onConnected={() => {
+                        this.setState({
+                            statusText: 'connected',
+                            isConnected: true,
+                        })
+                    }}
+                    onConnectFailure={event => this.setState({statusText: 'error: ' + event.nativeEvent.reason})}
+                    onDisconnected={() => {
+                        this.setState({
+                            statusText: 'disconnected',
+                            isConnected: false,
+                        })
+                    }}
+                    onParticipantConnected={event => this.setState({statusText: 'new participant: ' + event.nativeEvent.participant})}
+                    onParticipantDisconnected={event => this.setState({statusText: 'participant disconnected'})}
+                />
+                <Text
+                    style={styles.backButtonText}
+                    onPress={() => this.props.navigator.pop()}
+                >
+                    Back
+                </Text>
+                <TouchableHighlight
+                    style={styles.switchCamera}
+                    onPress={() => this.twilioView.switchCamera()}
+                >
+                    <Text style={styles.buttonText}>Camera</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={styles.toogleVideo}
+                    onPress={() => this.twilioView.toggleVideo()}
+                >
+                    <Text style={styles.buttonText}>Video</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={styles.toogleAudio}
+                    onPress={() => this.twilioView.toggleSound()}
+                >
+                    <Text style={styles.buttonText}>Audio</Text>
+                </TouchableHighlight>
+                <View
+                    style={styles.connectButtom}>
+                    <Text
+                        style={styles.connectText}
+                        onPress={() => this.connectButtonPress()}
+                    >
+                        {this.state.isConnected ? 'D': 'C'}
+                    </Text>
+                </View>
+                <Text
+                    style={styles.statusText}
+                >
+                    {this.state.statusText}
+                </Text>
+            </View>
+        );
+    }
+}
+```
 
 
 ##Screenshot
